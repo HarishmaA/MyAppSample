@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
+import {useDispatch,useSelector} from 'react-redux';
+import {fetchData} from './actions';
 import './App.css';
 const App = ()=> {
-  const [quotes,setQuotes] = useState([]);
+  const quotes = useSelector(state=>state.quotes);
   const [randomQuote,setRandomQuote] = useState({});
+  const dispatch = useDispatch();
   const getRandomQuote=()=> {
-   setRandomQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+   setRandomQuote(quotes[0][Math.floor(Math.random() * quotes[0].length)]);
  }
  const changeColor=()=>{
   let colors = ['#16a085', '#27ae60', '#2c3e50', '#f39c12', '#e74c3c', '#9b59b6', '#FB6964', '#342224', "#472E32", "#BDBB99", "#77B1A9", "#73A857"];
@@ -12,17 +15,10 @@ const App = ()=> {
   document.body.style = "background:" + colors[index];
   return colors[index];
  }
- async function fetchData() {
-  const res = await fetch('https://gist.githubusercontent.com/camperbot/5a022b72e96c4c9585c32bf6a75f62d9/raw/e3c6895ce42069f0ee7e991229064f167fe8ccdc/quotes.json')
-  res.json()
-     .then(data => setQuotes(data.quotes))
-     .catch(err => console.log(err));
-}
-  useEffect(()=>{
-  fetchData();
-},[]);
-  
 
+useEffect(()=>{
+  dispatch(fetchData());
+},[]);
     const color = changeColor();
     return (
       <div id = "quote-box">
@@ -34,6 +30,4 @@ const App = ()=> {
       </div>
     );
 }
-
-
 export default App;
